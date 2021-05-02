@@ -1,6 +1,6 @@
 # retailapplicationreactive (work in progress)
 
-This small application collaborates with the retailapplication of this repo.
+This small application collaborates with the retailapplication and the retailapplicationkafka of this repo.
 
 In order to git-clone, mvn clean install, and mvn spring-boot:run this application one has to de the following:
 
