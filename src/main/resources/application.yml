@@ -1,0 +1,17 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/PRODUCT_PURCHASE_DB
+    username: postgres
+    password: postgres
+
+kafka:
+  bootstrapAddress: localhost:9092
+
+server:
+  port: 8086
+
+partitioned:
+  topic:
+    name: partitioned
+
+
