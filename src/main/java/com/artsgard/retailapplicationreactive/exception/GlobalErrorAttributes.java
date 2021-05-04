@@ -1,26 +1,33 @@
 package com.artsgard.retailapplicationreactive.exception;
 
-import org.springframework.boot.web.error.ErrorAttributeOptions;
-import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.server.ServerRequest;
-
 import java.util.Map;
 
+import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.ServerRequest;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
+
+@Getter
+@Setter
+@Component
 public class GlobalErrorAttributes extends DefaultErrorAttributes {
 
-    @Override
-    public Map<String, Object> getErrorAttributes(ServerRequest requestAttributes,
-                                                  ErrorAttributeOptions includeStackTrace) {
-        Map<String, Object> errorAttributes = super.getErrorAttributes(
-                requestAttributes, includeStackTrace);
+    private HttpStatus status = HttpStatus.BAD_REQUEST;
+    private String message = "please provide some message";
 
-        final Throwable error = super.getError(requestAttributes);
-        if (error instanceof ResourceNotFoundException) {
-            final ResourceNotFoundException notFound = (ResourceNotFoundException) error;
-            errorAttributes.put("message", notFound.getMessage());
-        }
-        return errorAttributes;
+
+
+    @Override
+    public Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
+        Map<String, Object> map = super.getErrorAttributes(
+                request, options);
+        map.put("status", HttpStatus.BAD_REQUEST);
+        map.put("message", message);
+        return map;
     }
 
 }
