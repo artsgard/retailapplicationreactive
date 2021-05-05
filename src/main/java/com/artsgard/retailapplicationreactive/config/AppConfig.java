@@ -3,10 +3,12 @@ package com.artsgard.retailapplicationreactive.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
+@Configuration
 public class AppConfig  {
 
     @Bean
@@ -27,5 +29,10 @@ public class AppConfig  {
 
         return new CorsWebFilter(source);
     }
-
+/*
+    @Bean
+    public ServerCodecConfigurer serverCodecConfigurer() {
+        return ServerCodecConfigurer.create();
+    }
+*/
 }
