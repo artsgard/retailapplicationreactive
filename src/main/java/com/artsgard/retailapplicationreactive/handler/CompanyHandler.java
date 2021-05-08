@@ -5,6 +5,8 @@ import com.artsgard.retailapplicationreactive.exception.ResourceMandatoryExcepti
 import com.artsgard.retailapplicationreactive.repository.CompanyRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -18,6 +20,8 @@ import static org.springframework.web.reactive.function.server.ServerResponse.*;
 import com.artsgard.retailapplicationreactive.exception.ResourceNotFoundException;
 import reactor.core.publisher.Flux;
 
+import java.util.Optional;
+
 @Component
 public class CompanyHandler {
 
@@ -30,13 +34,14 @@ public class CompanyHandler {
     public Mono<ServerResponse> getCompany(ServerRequest request) {
         long id = Long.valueOf(request.pathVariable("id"));
         return companyRepo.findById(id)
-
+                .switchIfEmpty( Mono.error(new ResourceNotFoundException("Application Not Found")))
                 .flatMap(s -> ServerResponse.ok()
                         .contentType(APPLICATION_JSON)
-                        .bodyValue(s))
-                .switchIfEmpty(notFound().build());
-                //.onErrorResume(e -> Mono.error(new ResourceMandatoryException("name is mandatory", e)));
+                        .bodyValue(s));
+    }
 
+    private Mono<ServerResponse> errorNotFoundMono(){
+        return Mono.error(new ResourceNotFoundException("bla bla"));
     }
 
     public Mono<ServerResponse> getCompany2(ServerRequest request) {
@@ -47,7 +52,7 @@ public class CompanyHandler {
                         .contentType(APPLICATION_JSON)
                         .body(comp, Company.class);
             } else {
-                return Mono.error(new ResourceNotFoundException("No resource found"));
+                return Mono.error(new ResourceNotFoundException("No company found with id: " + id));
             }
         });
     }
@@ -79,19 +84,21 @@ public class CompanyHandler {
                         if (p.getCompanyRef() != null) c.setCompanyRef(p.getCompanyRef());
                         if (p.getDescription() != null) c.setDescription(p.getDescription());
                         return  companyRepo.save(c);
-                    })).flatMap(r -> ok()
+                    })).flatMap(r -> ServerResponse.badRequest()
                          .body(r, Company.class))
-                 .switchIfEmpty(notFound().build());
+                         .onErrorResume(e -> Mono.error(new ResourceNotFoundException("The company is not present", e)));
     }
 
     public Mono<ServerResponse> deleteCompany(ServerRequest request) {
         return companyRepo
                 .findById(Long.valueOf(request.pathVariable("id")))
                 .flatMap(p -> noContent().build(companyRepo.delete(p)))
-                .switchIfEmpty(notFound().build());
+                .onErrorResume(e -> Mono.error(new ResourceNotFoundException("The company is not present", e)));
     }
 
-    public Mono<ServerResponse> helloGreeting4(ServerRequest request) {
+
+    // tryout code
+    public Mono<ServerResponse> helloGreeting33(ServerRequest request) {
 
         return Mono.just("Hello, " + request.queryParam("name").get())
                 .onErrorReturn("Hello Stranger")
@@ -100,7 +107,7 @@ public class CompanyHandler {
                         .bodyValue(s));
     }
 
-    public Mono<ServerResponse> helloGreeting3(ServerRequest request) {
+    public Mono<ServerResponse> helloRequest3(ServerRequest request) {
 
         return Mono.just("Hello, " + request.queryParam("name").get())
                 .flatMap(s -> ServerResponse.ok()
@@ -112,27 +119,50 @@ public class CompanyHandler {
                                 .bodyValue(s)));
     }
 
-    public Mono<ServerResponse> helloGreeting(ServerRequest request) {
+    public Mono<ServerResponse> helloRequest(ServerRequest request) {
 
         return Mono.just("Hello, " + request.queryParam("name").get())
-                .flatMap(s -> ServerResponse.ok()
-                        .contentType(MediaType.TEXT_PLAIN)
-                        .bodyValue(s))
-                .onErrorResume(e -> Mono.just("Error " + e.getMessage())
-                        .flatMap(s -> ServerResponse.ok()
-                                .contentType(MediaType.TEXT_PLAIN)
-                                .bodyValue(s)));
+                .onErrorResume(e -> Mono.error(new ResourceNotFoundException("Message is required!", e)))
+                .flatMap(s -> ok()
+                        .contentType(TEXT_PLAIN)
+                        .bodyValue(s));
     }
 
-    public Mono<ServerResponse> helloGreeting5(ServerRequest request) {
+    public Mono<ServerResponse> helloRequest5(ServerRequest request) {
 
         return ServerResponse.ok()
                 .body(sayHello(request)
                         .onErrorResume(e -> Mono.error(new ResourceNotFoundException("name is mandatory", e))), String.class);
     }
 
+    public Mono<ServerResponse> helloRequest7(ServerRequest request) {
+        return Mono.just("Hello, " + request.queryParam("name"))
+                .onErrorResume(e -> Mono.error(new ResourceNotFoundException("Message is required!", e)))
+                .flatMap(s -> ok()
+                        .contentType(TEXT_PLAIN)
+                        .bodyValue(s));
+
+    }
+
+    public Mono<ServerResponse> testRequest(ServerRequest request) {
+        return Mono.defer(() -> getResponseMessage(request))
+                .onErrorResume(e -> Mono.error(new ResourceNotFoundException("Message is required!", e)))
+                .flatMap(respText -> ServerResponse.ok().contentType(MediaType.TEXT_PLAIN)
+                        .bodyValue(respText));
+
+    }
+
+    private Mono<String> getResponseMessage(ServerRequest request) {
+        Optional<String> name = request.queryParam("name");
+
+        return Mono.just("Test " + name.get() + "!");
+    }
+
     private Mono<String> sayHello(ServerRequest request) {
-        return Mono.just("Hello, " + request.queryParam("name").get());
+        Optional<String> hello = request.queryParam("name");
+
+        return Mono.just("Test " + hello.get() + "!");
+
     }
 
 }

@@ -1,9 +1,11 @@
 package com.artsgard.retailapplicationreactive.handler;
 
 import com.artsgard.retailapplicationreactive.kafka.KafkaConsumer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -12,6 +14,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 
 @Configuration
 public class CompanyRouter {
+
 
     @Bean
     public RouterFunction<ServerResponse> kafka(KafkaConsumer consumer) {
@@ -28,8 +31,17 @@ public class CompanyRouter {
                 .andRoute(GET("/beer/v2/company/{id}").and(accept(MediaType.APPLICATION_JSON)), companyHandler::getCompany)
                 .andRoute(POST("/beer/v2/company").and(accept(MediaType.APPLICATION_JSON)).and(contentType(MediaType.APPLICATION_JSON)), companyHandler::createCompany)
                 .andRoute(PUT("/beer/v2/company/{id}").and(accept(MediaType.APPLICATION_JSON)).and(contentType(MediaType.APPLICATION_JSON)), companyHandler::updateCompany)
-                .andRoute(GET("/beer/hello").and(accept(MediaType.TEXT_PLAIN)), companyHandler::helloGreeting)
                 .andRoute(DELETE("/beer/v2/company/{id}"), companyHandler::deleteCompany);
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> index(CompanyHandler companyHandler) {
+        return RouterFunctions.route(RequestPredicates.GET("/beer/hello"), companyHandler::helloRequest);
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> home(CompanyHandler companyHandler) {
+        return RouterFunctions.route(RequestPredicates.GET("/beer/test"), companyHandler::testRequest);
     }
 
 }
