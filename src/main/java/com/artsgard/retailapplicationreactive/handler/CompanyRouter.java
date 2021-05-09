@@ -33,15 +33,4 @@ public class CompanyRouter {
                 .andRoute(PUT("/beer/v2/company/{id}").and(accept(MediaType.APPLICATION_JSON)).and(contentType(MediaType.APPLICATION_JSON)), companyHandler::updateCompany)
                 .andRoute(DELETE("/beer/v2/company/{id}"), companyHandler::deleteCompany);
     }
-
-    @Bean
-    public RouterFunction<ServerResponse> index(CompanyHandler companyHandler) {
-        return RouterFunctions.route(RequestPredicates.GET("/beer/hello"), companyHandler::helloRequest);
-    }
-
-    @Bean
-    public RouterFunction<ServerResponse> home(CompanyHandler companyHandler) {
-        return RouterFunctions.route(RequestPredicates.GET("/beer/test"), companyHandler::testRequest);
-    }
-
 }

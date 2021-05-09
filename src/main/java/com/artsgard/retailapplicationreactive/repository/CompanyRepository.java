@@ -20,7 +20,12 @@ import java.util.Optional;
 @Repository
 public interface CompanyRepository extends ReactiveCrudRepository<Company, Long> {
 
-    Optional<Company> findCompanyByCompanyRef(String ref);
+    @Query("SELECT * FROM COMPANY WHERE companyRef = :ref")
+    Mono<Company> getCompByRef(String ref);
+
+    Mono<Boolean> existsByCompanyRef(String name);
+    Mono<Boolean> existsByCompanyName(String name);
+    Mono<Company> findCompanyByCompanyRef(String ref);
 
     @Query("SELECT * FROM COMPANY")
     Flux<Company> findAllComp();

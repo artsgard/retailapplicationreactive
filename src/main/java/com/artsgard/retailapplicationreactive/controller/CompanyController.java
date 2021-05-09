@@ -5,6 +5,7 @@ import com.artsgard.retailapplicationreactive.service.CompanyService;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -38,7 +39,7 @@ public class CompanyController {
 
     @PostMapping(path = "/company", consumes = "application/json")
     public Mono<Company> createCompany(@RequestBody Mono<Company> companyMono) {
-        return this.companyService.createCompany(companyMono);
+        return this.companyService.createCompany(companyMono.block());
     }
     
     @PutMapping(path = "/company/{id}", produces = "application/json", consumes = "application/json")
@@ -47,7 +48,7 @@ public class CompanyController {
     }
     
      @DeleteMapping(path = "/company/{id}")
-     public Mono<Void> deleteCompany(@PathVariable Long id) {
+     public Mono<ServerResponse> deleteCompany(@PathVariable Long id) {
         return this.companyService.deleteCompany(id);
      }
 
