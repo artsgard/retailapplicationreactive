@@ -12,9 +12,6 @@ import java.util.Optional;
 /**
  *
  * @author WillemDragstra
- * https://piotrminkowski.com/2018/10/18/introduction-to-reactive-apis-with-postgres-r2dbc-spring-data-jdbc-and-spring-webflux/
- * https://github.com/mirromutth/r2dbc-mysql
- * https://docs.microsoft.com/es-es/azure/developer/java/spring-framework/configure-spring-data-r2dbc-with-azure-mysql
  *
  */
 @Repository

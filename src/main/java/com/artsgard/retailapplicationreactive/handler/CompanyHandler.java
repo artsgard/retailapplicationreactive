@@ -20,7 +20,6 @@ public class CompanyHandler {
     }
 
     public Mono<ServerResponse> listCompanies(ServerRequest request) {
-
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(companyService.getCompanies(), Company.class));
     }
@@ -28,7 +27,7 @@ public class CompanyHandler {
     public Mono<ServerResponse> getCompany(ServerRequest request) {
         long id = Long.valueOf(request.pathVariable("id"));
         return companyService.getCompanyById(id)
-                .flatMap(comp -> ServerResponse.ok()
+                        .flatMap(comp -> ServerResponse.ok()
                         .contentType(APPLICATION_JSON)
                         .bodyValue(comp));
     }
@@ -36,23 +35,20 @@ public class CompanyHandler {
     public Mono<ServerResponse> createCompany(ServerRequest request) {
         Mono<Company> body = request.bodyToMono(Company.class);
         Mono<Company> comp = body.flatMap(companyService::createCompany);
-        return comp
-                .flatMap(result -> ok()
+        return comp.flatMap(result -> ok()
                         .contentType(APPLICATION_JSON)
                         .bodyValue(result));
     }
 
     public Mono<ServerResponse> updateCompany(ServerRequest request) {
          return companyService.updateCompany(Long.valueOf(request.pathVariable("id")), request.bodyToMono(Company.class))
-                 .flatMap(comp -> ServerResponse.ok()
+                         .flatMap(comp -> ServerResponse.ok()
                          .contentType(APPLICATION_JSON)
                          .bodyValue(comp));
-
     }
 
     public Mono<ServerResponse> deleteCompany(ServerRequest request) {
-        return companyService.deleteCompany(Long.valueOf(request.pathVariable("id")));
-
+        return companyService.deleteCompany(Long.valueOf(request.pathVariable("id"))).then(Mono.empty());
     }
 
 }

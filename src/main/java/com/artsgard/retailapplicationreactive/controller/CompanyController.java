@@ -48,7 +48,7 @@ public class CompanyController {
     }
     
      @DeleteMapping(path = "/company/{id}")
-     public Mono<ServerResponse> deleteCompany(@PathVariable Long id) {
+     public Mono<Void> deleteCompany(@PathVariable Long id) {
         return this.companyService.deleteCompany(id);
      }
 
