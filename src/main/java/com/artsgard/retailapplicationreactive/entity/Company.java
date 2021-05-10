@@ -2,10 +2,10 @@ package com.artsgard.retailapplicationreactive.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -20,9 +20,16 @@ public class Company implements Serializable {
 
     @Id
     private Long id;
+
+    @NotNull
+    @Size(min = 2, max = 80)
     private String companyName;
+
+    @NotNull
     private String companyRef;
+
     private String description;
+
     private Timestamp registerDate;
 
     //private List<User> companyUsers = new ArrayList<>(0);

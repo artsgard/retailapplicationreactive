@@ -1,4 +1,4 @@
-package com.artsgard.retailapplicationreactive.handler;
+package com.artsgard.retailapplicationreactive.web;
 
 import com.artsgard.retailapplicationreactive.kafka.KafkaConsumer;
 import org.springframework.context.annotation.Bean;

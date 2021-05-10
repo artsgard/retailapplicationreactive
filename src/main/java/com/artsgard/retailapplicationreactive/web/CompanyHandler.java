@@ -1,6 +1,7 @@
-package com.artsgard.retailapplicationreactive.handler;
+package com.artsgard.retailapplicationreactive.web;
 
 import com.artsgard.retailapplicationreactive.entity.Company;
+import com.artsgard.retailapplicationreactive.exception.ValidationRequestHandler;
 import com.artsgard.retailapplicationreactive.service.CompanyService;
 import reactor.core.publisher.Mono;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -14,8 +15,10 @@ import static org.springframework.web.reactive.function.server.ServerResponse.*;
 public class CompanyHandler {
 
     private final CompanyService companyService;
+    private final ValidationRequestHandler validationHandler;
 
-    public CompanyHandler(CompanyService companyService) {
+    public CompanyHandler(CompanyService companyService, ValidationRequestHandler validationHandler) {
+        this.validationHandler = validationHandler;
         this.companyService = companyService;
     }
 
@@ -33,8 +36,16 @@ public class CompanyHandler {
     }
 
     public Mono<ServerResponse> createCompany(ServerRequest request) {
+
         Mono<Company> body = request.bodyToMono(Company.class);
+/*
+        Mono<Company> body = validationHandler.requireValidBody(result -> {
+            return result.then(Company.class);
+        });
+
+*/
         Mono<Company> comp = body.flatMap(companyService::createCompany);
+
         return comp.flatMap(result -> ok()
                         .contentType(APPLICATION_JSON)
                         .bodyValue(result));

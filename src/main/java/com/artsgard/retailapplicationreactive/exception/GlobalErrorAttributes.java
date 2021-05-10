@@ -30,13 +30,15 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
             errorAttributes.put("errors", getError(request));
         } else if (error instanceof ResourceNotFoundException) {
             errorAttributes.put("status", HttpStatus.NOT_FOUND);
-            errorAttributes.put("status", HttpStatus.NOT_FOUND);
+            errorAttributes.put("class", error.getClass());
             errorAttributes.put("message", error.getMessage());
         } else if (error instanceof ResourceMandatoryException) {
             errorAttributes.put("status", HttpStatus.BAD_REQUEST);
+            errorAttributes.put("class", error.getClass());
             errorAttributes.put("message", error.getMessage());
         } else if (error instanceof ResourceAlreadyPresentException) {
             errorAttributes.put("status", HttpStatus.BAD_REQUEST);
+            errorAttributes.put("class", error.getClass());
             errorAttributes.put("message", error.getMessage());
         }
         return errorAttributes;

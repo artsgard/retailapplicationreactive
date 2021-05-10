@@ -31,11 +31,15 @@ public class CompanyServiceImpl implements CompanyService {
         return this.companyRepo.existsByCompanyRef(company.getCompanyRef()).flatMap(exist -> {
             if (exist) {
                 return Mono.error(new ResourceAlreadyPresentException("The Product ref allready esists"));
+            }
+            return Mono.just(exist);
+        }).flatMap(res -> companyRepo.existsByCompanyName(company.getCompanyName()).flatMap(exist -> {
+            if (exist) {
+                return Mono.error(new ResourceAlreadyPresentException("The Product name allready esists"));
             } else {
                 return companyRepo.save(company);
             }
-
-        });
+        }));
 
     }
 
