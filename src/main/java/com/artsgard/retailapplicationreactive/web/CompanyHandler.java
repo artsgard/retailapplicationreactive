@@ -28,27 +28,29 @@ public class CompanyHandler {
     }
 
     public Mono<ServerResponse> getCompany(ServerRequest request) {
-        long id = Long.valueOf(request.pathVariable("id"));
-        return companyService.getCompanyById(id)
+        return companyService.getCompanyById(Long.valueOf(request.pathVariable("id")))
                         .flatMap(comp -> ServerResponse.ok()
                         .contentType(APPLICATION_JSON)
                         .bodyValue(comp));
     }
 
+    public Mono<ServerResponse> createCompany2(ServerRequest request) {
+        return request.bodyToMono(Company.class)
+                .flatMap(companyService::createCompany)
+                    .flatMap(result -> ok()
+                    .contentType(APPLICATION_JSON)
+                    .bodyValue(result));
+    }
+
     public Mono<ServerResponse> createCompany(ServerRequest request) {
+        return validationHandler.requireValidBody(body -> {
+            Mono<Company> compMono = body.flatMap(comp -> Mono.just(comp));
 
-        Mono<Company> body = request.bodyToMono(Company.class);
-/*
-        Mono<Company> body = validationHandler.requireValidBody(result -> {
-            return result.then(Company.class);
-        });
-
-*/
-        Mono<Company> comp = body.flatMap(companyService::createCompany);
-
-        return comp.flatMap(result -> ok()
-                        .contentType(APPLICATION_JSON)
-                        .bodyValue(result));
+            return compMono.flatMap(companyService::createCompany)
+                    .flatMap(comp -> ok()
+                            .contentType(APPLICATION_JSON)
+                            .bodyValue(comp));
+        }, request, Company.class);
     }
 
     public Mono<ServerResponse> updateCompany(ServerRequest request) {

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -22,6 +24,7 @@ public class Company implements Serializable {
     private Long id;
 
     @NotNull
+    @Email
     @Size(min = 2, max = 80)
     private String companyName;
 
