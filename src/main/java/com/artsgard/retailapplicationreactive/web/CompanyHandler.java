@@ -44,9 +44,8 @@ public class CompanyHandler {
 
     public Mono<ServerResponse> createCompany(ServerRequest request) {
         return validationHandler.requireValidBody(body -> {
-            Mono<Company> compMono = body.flatMap(comp -> Mono.just(comp));
-
-            return compMono.flatMap(companyService::createCompany)
+            return body.flatMap(comp -> Mono.just(comp))
+            .flatMap(companyService::createCompany)
                     .flatMap(comp -> ok()
                             .contentType(APPLICATION_JSON)
                             .bodyValue(comp));

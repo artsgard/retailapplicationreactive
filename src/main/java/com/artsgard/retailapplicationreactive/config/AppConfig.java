@@ -12,15 +12,18 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
+import javax.validation.MessageInterpolator;
+
 @Configuration
 public class AppConfig  {
 
+/*
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource
                 = new ReloadableResourceBundleMessageSource();
 
-        messageSource.setBasename("classpath:messages");
+        messageSource.setBasename("classpath:error-messages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
@@ -32,7 +35,7 @@ public class AppConfig  {
         bean.setValidationMessageSource(messageSource());
         return bean;
     }
-
+*/
 
 
     @Bean

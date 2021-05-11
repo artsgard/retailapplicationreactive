@@ -23,9 +23,9 @@ public class Company implements Serializable {
     @Id
     private Long id;
 
-    @NotNull
+    @NotNull(message = "some message1")
     //@Email(message = "{email.notempty}")
-    @Size(min = 2, max = 80)
+    @Size(min = 2, max = 80, message = "some message2")
     private String companyName;
 
     @NotNull
