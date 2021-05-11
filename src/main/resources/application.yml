@@ -4,6 +4,9 @@ spring:
     username: postgres
     password: postgres
 
+  messages:
+    basename: error-messages
+
 kafka:
   bootstrapAddress: localhost:9092
 

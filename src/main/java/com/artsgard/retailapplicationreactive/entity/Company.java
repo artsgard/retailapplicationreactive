@@ -24,11 +24,12 @@ public class Company implements Serializable {
     private Long id;
 
     @NotNull
-    @Email
+    //@Email(message = "{email.notempty}")
     @Size(min = 2, max = 80)
     private String companyName;
 
     @NotNull
+    @Size(min = 4, max = 80)
     private String companyRef;
 
     private String description;
